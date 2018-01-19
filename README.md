@@ -7,5 +7,6 @@ Análisis Caborca
 	* maps
 	* data
 	* temp
-* En la carpeta de **data** agregar las coordenadas de las estaciones meteorológicas
+* En la carpeta de **data** agregar las coordenadas de las estaciones meteorológicas con el formato:
+`ID,Long,Lat,Estado,Nombre`
 
