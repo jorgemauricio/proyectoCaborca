@@ -101,6 +101,7 @@ ENV/
 /data
 /maps
 /temp
+/estaciones
 
 # mypy
 .mypy_cache/
