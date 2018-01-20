@@ -101,11 +101,11 @@ def main():
 			print(y_values)
 
 			# limites min y max
-			LONG_MIN = x_values[0]
-			LONG_MAX = x_values[-1]
+			LONG_MIN = x_values[0] - 0.1
+			LONG_MAX = x_values[-1] + 0.1
 
-			LAT_MIN = y_values[0]
-			LAT_MAX = y_values[-1]
+			LAT_MIN = y_values[0] - 0.1
+			LAT_MAX = y_values[-1] + 0.1
 
 			# limites longitud > -115.65 y < -107.94
 			dataProcesamiento = dataProcesamiento.loc[dataProcesamiento['Lon'] > LONG_MIN]
@@ -130,46 +130,46 @@ def main():
 			m = Basemap(projection='mill',llcrnrlat=LAT_MIN,urcrnrlat=LAT_MAX,llcrnrlon=LONG_MIN,urcrnrlon=LONG_MAX,resolution='h')
 
 			# generar lats, lons
-			x, y = m(lons, lats)
+			#x, y = m(lons, lats)
 
 			# numero de columnas y filas
-			numCols = len(x)
-			numRows = len(y)
+			#numCols = len(x)
+			#numRows = len(y)
 
 			# generar xi, yi
-			xi = np.linspace(x.min(), x.max(), numCols)
-			yi = np.linspace(y.min(), y.max(), numRows)
+			#xi = np.linspace(x.min(), x.max(), numCols)
+			#yi = np.linspace(y.min(), y.max(), numRows)
 
 			# generar el meshgrid
-			xi, yi = np.meshgrid(xi, yi)
+			#xi, yi = np.meshgrid(xi, yi)
 
 			# generar zi
 			z = np.array(dataProcesamiento[columna])
-			zi = gd((x,y), z, (xi,yi), method='cubic')
+			#zi = gd((x,y), z, (xi,yi), method='cubic')
 
 			# generar clevs
-			stepVariable = 1
-			step = (z.max() - z.min()) / 10
+			#stepVariable = 1
+			#step = (z.max() - z.min()) / 10
 
 			# verificar el valor del intervalo
-			if step <= 1:
-			    stepVariable = 1
+			#if step <= 1:
+			#    stepVariable = 1
 
-			clevs = np.linspace(z.min(), z.max() + stepVariable , 10)
+			#clevs = np.linspace(z.min(), z.max() + stepVariable , 10)
 			#clevs = [1,2,3,4,5,6,7,8,9,10]
 
 			# contour plot
-			cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
+			#cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
 			
 			# agregar archivo shape de estados
 			m.readshapefile('../shapes/Estados', 'Estados')
 
 			# agregar puntos de estaciones
-			m.scatter(xC, yC, latlon=True,s=1, marker='o', color='r', zorder=25)
+			m.scatter(xC, yC, latlon=True,s=z, cmap='coolwarm', marker='o', zorder=25)
 
 			# colorbar
-			cbar = m.colorbar(cs, location='right', pad="5%")
-			cbar.set_label('mm')
+			#cbar = m.colorbar(cs, location='right', pad="5%")
+			#cbar.set_label('mm')
 			tituloTemporalParaElMapa = "{} {}-{:02d}-{:02d}".format(columna,anio,mes,dia)
 			(tituloTemporalParaElMapa)
 
