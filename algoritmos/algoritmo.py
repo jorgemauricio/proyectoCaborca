@@ -238,7 +238,7 @@ def iniciarProcesamiento():
 		cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
 		
 		# agregar archivo shape de estados
-		m.readshapefile('../shapes/Estados', 'Estados')
+		m.readshapefile('shapes/Estados', 'Estados')
 
 		# agregar puntos de estaciones
 		m.scatter(xC, yC, latlon=True,s=1, marker='o', color='r', zorder=25)

@@ -19,6 +19,7 @@ import pandas as pd
 # programa principal
 def main():
 	print("init procesamiento")
+	iniciarProcesamiento()
 
 
 def iniciarProcesamiento():
@@ -29,13 +30,13 @@ def iniciarProcesamiento():
 	LAT_MAX = 33.06
 
 	# archivos a procesar
-	listaDeArchivos = [x for x in os.listdir('') if x.endswith('')]
+	# listaDeArchivos = [x for x in os.listdir('') if x.endswith('')]
 	# nombre del archivo
-	nombreArchivo = "GBBEPx.emis_so2.001.20180118.nc"
+	nombreArchivo = "GBBEPx.emis_co.001.20180122.nc"
 	arrayNombreArchivo = nombreArchivo.split(".")
 	arrayComponente = arrayNombreArchivo[1].split("_")
 	nombreParaMapa = arrayComponente[1]
-	rutaArchivo = "../data/{}".format(nombreArchivo)
+	rutaArchivo = "../data/2018-01-22/{}".format(nombreArchivo)
 
 	# leer el archivo netcdf
 	dataset = Dataset(rutaArchivo)
@@ -55,7 +56,7 @@ def iniciarProcesamiento():
 	        dataText += tempText
 
 	# generar archivo temporal csv
-	fileName = '../temp/2018-01-17.csv'
+	fileName = '../temp/2018-01-22.csv'
 	textFile = open(fileName, "w")
 	textFile.write(dataText)
 	textFile.close()
@@ -121,7 +122,7 @@ def iniciarProcesamiento():
 
 	# Mac /Users/jorgemauricio/Documents/Research/proyectoGranizo/Maps/{}_{}.png
 	# Linux /home/jorge/Documents/Research/proyectoGranizo/Maps/{}_{}.png
-	nombreTemporalParaElMapa = "/Users/jorgemauricio/Documents/Research/proyectoCaborca/maps/{}_2018-01-17.png".format(nombreParaMapa)
+	nombreTemporalParaElMapa = "/Users/jorgemauricio/Documents/Research/proyectoCaborca/maps/{}_2018-01-22.png".format(nombreParaMapa)
 	plt.annotate('@2018 INIFAP', xy=(-109,29), xycoords='figure fraction', xytext=(0.45,0.45), color='g', zorder=50)
 
 	plt.savefig(nombreTemporalParaElMapa, dpi=300)
