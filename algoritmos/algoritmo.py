@@ -32,16 +32,16 @@ def main():
 	iniciarProcesamiento()
 
 def iniciarDescarga():
-	
+
 	# ***** constantes
 	URL_DESCARGA = "http://satepsanone.nesdis.noaa.gov/pub/FIRE/GBBEPx"
-	
+
 	# elementos
 	arrayElementos = ['bc','co', 'co2','oc','pm25','so2']
 	# Mac /Users/jorgemauricio/Documents/Research/proyectoCaborca
 	# Linux /home/jorge/Documents/Research/proyectoCaborca
 	URL_CARPETA = "/Users/jorgemauricio/Documents/Research/proyectoCaborca"
-	
+
 	# fecha actual
 	fechaActual = strftime("%Y-%m-%d")
 
@@ -57,14 +57,27 @@ def iniciarDescarga():
 	# nombre de la ruta para guardar mapas
 	rutaDeCarpetaParaMapas = '{}/maps/{}-{:02d}-{:02d}'.format(URL_CARPETA,anio,mes,dia)
 
+	# nombre de la ruta para shapes
+	rutaParaArchivosShapes = '{}/shapes/Estados.shp'.format(URL_CARPETA)
+
 	# crear carpeta para descarga
-	os.mkdir(rutaDeCarpetaParaDescarga)
+	if not os.path.exists(rutaDeCarpetaParaDescarga):
+		os.mkdir(rutaDeCarpetaParaDescarga)
+	else:
+		print("***** Carpeta descarga ya existe")
 
 	# crear carpeta para guardar mapas
-	os.mkdir(rutaDeCarpetaParaMapas)
+	# crear carpeta para descarga
+	if not os.path.exists(rutaDeCarpetaParaMapas):
+		os.mkdir(rutaDeCarpetaParaMapas)
+	else:
+		print("***** Carpeta mapas ya existe")
 
 	# crear carpeta para guardar archivos temporales
-	os.mkdir(rutaDeCarpetaParaTemporales)
+	if not os.path.exists(rutaDeCarpetaParaTemporales):
+		os.mkdir(rutaDeCarpetaParaTemporales)
+	else:
+		print("***** Carpeta temporales ya existe")
 
 	# cambiar a carpeta de descarga
 	os.chdir(rutaDeCarpetaParaDescarga)
@@ -105,7 +118,7 @@ def generarDiaAnterior(f):
 			anio -= 1
 			mes = 12
 			diasEnElMes = numeroDeDiasEnElMes(mes)
-	
+
 	return (anio, mes, dia)
 
 def numeroDeDiasEnElMes(m):
@@ -123,14 +136,17 @@ def numeroDeDiasEnElMes(m):
 		return 30
 
 def iniciarProcesamiento():
-	
+
 	# Mac /Users/jorgemauricio/Documents/Research/proyectoCaborca
 	# Linux /home/jorge/Documents/Research/proyectoCaborca
 	URL_CARPETA = "/Users/jorgemauricio/Documents/Research/proyectoCaborca"
-	
+
+	# ruta para acceder a los archivos shapes# nombre de la ruta para shapes
+	rutaParaArchivosShapes = '{}/shapes/Estados'.format(URL_CARPETA)
+
 	# coordenadas estaciones
 	dataEstaciones = pd.read_csv("/Users/jorgemauricio/Documents/Research/proyectoCaborca/data/coordenadas_estaciones.csv")
-	
+
 	# fecha actual
 	fechaActual = strftime("%Y-%m-%d")
 
@@ -148,7 +164,7 @@ def iniciarProcesamiento():
 
 	# archivos a procesar
 	listaDeArchivos = [x for x in os.listdir(rutaDeCarpetaParaElProcesamiento) if x.endswith('.nc')]
-	
+
 	# ciclo de procesamiento
 	for archivo in listaDeArchivos:
 		# nombre del archivo
@@ -191,6 +207,9 @@ def iniciarProcesamiento():
 		# limites latitud > 25.41 y < 33.06
 		data = data.loc[data['Lat'] > LAT_MIN]
 		data = data.loc[data['Lat'] < LAT_MAX]
+
+		# ug/m3 a ppm
+		data['Biomass'] = data['Biomass'] * 10000000000
 
 		# obtener valores de x, y
 		lons = np.array(data['Long'])
@@ -236,16 +255,16 @@ def iniciarProcesamiento():
 
 		# contour plot
 		cs = m.contourf(xi,yi,zi, clevs, zorder=5, alpha=0.5, cmap='PuBu')
-		
+
 		# agregar archivo shape de estados
-		m.readshapefile('shapes/Estados', 'Estados')
+		m.readshapefile(rutaParaArchivosShapes, 'Estados')
 
 		# agregar puntos de estaciones
 		m.scatter(xC, yC, latlon=True,s=1, marker='o', color='r', zorder=25)
 
 		# colorbar
 		cbar = m.colorbar(cs, location='right', pad="5%")
-		cbar.set_label('mm')
+		cbar.set_label('pm')
 		tituloTemporalParaElMapa = "{} {}-{:02d}-{:02d}".format(nombreParaMapa,anio,mes,dia)
 		plt.title(tituloTemporalParaElMapa)
 
